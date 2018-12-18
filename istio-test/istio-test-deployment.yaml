@@ -1,0 +1,60 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kompose.cmd: C:\Program Files\KomposeTool\kompose.exe convert -o istio-test-deployment.yaml
+      kompose.service.type: loadbalancer
+      kompose.version: 1.4.0 (c7964e7)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: istio-test
+      app: istio-test
+    name: istio-test
+  spec:
+    ports:
+    - name: "5000"
+      port: 5000
+      targetPort: 80
+    selector:
+      io.kompose.service: istio-test
+      app: istio-test
+    type: LoadBalancer
+  status:
+    loadBalancer: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      kompose.cmd: C:\Program Files\KomposeTool\kompose.exe convert -o istio-test-deployment.yaml
+      kompose.service.type: loadbalancer
+      kompose.version: 1.4.0 (c7964e7)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: istio-test
+      app: istio-test
+      version: v1
+    name: istio-test
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          io.kompose.service: istio-test
+          app: istio-test
+          version: v1
+      spec:
+        containers:
+        - image: venkateshsrini3/istiotest
+          name: istio-test
+          ports:
+          - containerPort: 80
+          resources: {}
+        restartPolicy: Always
+  status: {}
+kind: List
+metadata: {}
+

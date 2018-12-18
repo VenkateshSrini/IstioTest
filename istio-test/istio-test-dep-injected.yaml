@@ -1,0 +1,161 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kompose.cmd: C:\Program Files\KomposeTool\kompose.exe convert -o istio-test-deployment.yaml
+      kompose.service.type: loadbalancer
+      kompose.version: 1.4.0 (c7964e7)
+    creationTimestamp: null
+    labels:
+      app: istio-test
+      io.kompose.service: istio-test
+    name: istio-test
+  spec:
+    ports:
+    - name: "5000"
+      port: 5000
+      targetPort: 80
+    selector:
+      app: istio-test
+      io.kompose.service: istio-test
+    type: LoadBalancer
+  status:
+    loadBalancer: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      kompose.cmd: C:\Program Files\KomposeTool\kompose.exe convert -o istio-test-deployment.yaml
+      kompose.service.type: loadbalancer
+      kompose.version: 1.4.0 (c7964e7)
+    creationTimestamp: null
+    labels:
+      app: istio-test
+      io.kompose.service: istio-test
+      version: v1
+    name: istio-test
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/status: '{"version":"ebf16d3ea0236e4b5cb4d3fc0f01da62e2e6265d005e58f8f6bd43a4fb672fdd","initContainers":["istio-init"],"containers":["istio-proxy"],"volumes":["istio-envoy","istio-certs"],"imagePullSecrets":null}'
+        creationTimestamp: null
+        labels:
+          app: istio-test
+          io.kompose.service: istio-test
+          version: v1
+      spec:
+        containers:
+        - image: venkateshsrini3/istiotest
+          name: istio-test
+          ports:
+          - containerPort: 80
+          resources: {}
+        - args:
+          - proxy
+          - sidecar
+          - --configPath
+          - /etc/istio/proxy
+          - --binaryPath
+          - /usr/local/bin/envoy
+          - --serviceCluster
+          - istio-test
+          - --drainDuration
+          - 45s
+          - --parentShutdownDuration
+          - 1m0s
+          - --discoveryAddress
+          - istio-pilot.istio-system:15005
+          - --discoveryRefreshDelay
+          - 1s
+          - --zipkinAddress
+          - zipkin.istio-system:9411
+          - --connectTimeout
+          - 10s
+          - --proxyAdminPort
+          - "15000"
+          - --controlPlaneAuthPolicy
+          - MUTUAL_TLS
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: INSTANCE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: ISTIO_META_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: ISTIO_META_INTERCEPTION_MODE
+            value: REDIRECT
+          - name: ISTIO_METAJSON_LABELS
+            value: |
+              {"app":"istio-test","io.kompose.service":"istio-test","version":"v1"}
+          image: docker.io/istio/proxyv2:1.0.4
+          imagePullPolicy: IfNotPresent
+          name: istio-proxy
+          ports:
+          - containerPort: 15090
+            name: http-envoy-prom
+            protocol: TCP
+          resources:
+            requests:
+              cpu: 10m
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsUser: 1337
+          volumeMounts:
+          - mountPath: /etc/istio/proxy
+            name: istio-envoy
+          - mountPath: /etc/certs/
+            name: istio-certs
+            readOnly: true
+        initContainers:
+        - args:
+          - -p
+          - "15001"
+          - -u
+          - "1337"
+          - -m
+          - REDIRECT
+          - -i
+          - '*'
+          - -x
+          - ""
+          - -b
+          - "80"
+          - -d
+          - ""
+          image: docker.io/istio/proxy_init:1.0.4
+          imagePullPolicy: IfNotPresent
+          name: istio-init
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - NET_ADMIN
+            privileged: true
+        restartPolicy: Always
+        volumes:
+        - emptyDir:
+            medium: Memory
+          name: istio-envoy
+        - name: istio-certs
+          secret:
+            optional: true
+            secretName: istio.default
+  status: {}
+kind: List
+metadata: {}
+---
