@@ -11,3 +11,5 @@ spec:
   - route:
     - destination:
         host: istio-test
+        port:
+          number: 5000
