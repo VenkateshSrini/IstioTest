@@ -42,7 +42,7 @@ items:
     template:
       metadata:
         annotations:
-          sidecar.istio.io/status: '{"version":"ebf16d3ea0236e4b5cb4d3fc0f01da62e2e6265d005e58f8f6bd43a4fb672fdd","initContainers":["istio-init"],"containers":["istio-proxy"],"volumes":["istio-envoy","istio-certs"],"imagePullSecrets":null}'
+          sidecar.istio.io/status: '{"version":"50128f63e7b050c58e1cdce95b577358054109ad2aff4bc4995158c06924a43b","initContainers":["istio-init"],"containers":["istio-proxy"],"volumes":["istio-envoy","istio-certs"],"imagePullSecrets":null}'
         creationTimestamp: null
         labels:
           app: istio-test
@@ -102,7 +102,7 @@ items:
           - name: ISTIO_METAJSON_LABELS
             value: |
               {"app":"istio-test","io.kompose.service":"istio-test","version":"v1"}
-          image: docker.io/istio/proxyv2:1.0.4
+          image: docker.io/istio/proxyv2:1.0.5
           imagePullPolicy: IfNotPresent
           name: istio-proxy
           ports:
@@ -137,7 +137,7 @@ items:
           - "80"
           - -d
           - ""
-          image: docker.io/istio/proxy_init:1.0.4
+          image: docker.io/istio/proxy_init:1.0.5
           imagePullPolicy: IfNotPresent
           name: istio-init
           resources: {}
