@@ -12,8 +12,8 @@ spec:
   - match:
     - uri:
         prefix: /
-  - route:
+    route:
     - destination:
-        host: istio-test
+        host: localhost
         port:
           number: 5000
