@@ -1,6 +1,10 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
+  annotations:
+    kompose.cmd: C:\Program Files\KomposeTool\kompose.exe convert -o istio-test-deployment.yaml
+    kompose.service.type: loadbalancer
+    kompose.version: 1.4.0 (c7964e7)
   name: istio-test-gateway
   namespace: istio-apps
 spec:
