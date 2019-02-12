@@ -18,4 +18,6 @@ spec:
         prefix: /
     route:
     - destination:
-        host: istio-test       
+        host: istio-test
+        port:
+          number: 5000

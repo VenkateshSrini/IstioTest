@@ -12,6 +12,7 @@ items:
       io.kompose.service: istio-test
       app: istio-test
     name: istio-test
+    namespace: istio-apps
   spec:
     ports:
     - name: "5000"
@@ -36,6 +37,7 @@ items:
       app: istio-test
       version: v1
     name: istio-test
+    namespace: istio-apps
   spec:
     replicas: 1
     strategy: {}
