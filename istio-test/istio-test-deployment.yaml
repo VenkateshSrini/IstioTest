@@ -31,13 +31,14 @@ items:
       kompose.cmd: C:\Program Files\KomposeTool\kompose.exe convert -o istio-test-deployment.yaml
       kompose.service.type: loadbalancer
       kompose.version: 1.4.0 (c7964e7)
+      sidecar.istio.io/inject: "true"
     creationTimestamp: null
     labels:
       io.kompose.service: istio-test
       app: istio-test
       version: v1
     name: istio-test
-    namespace: istio-apps
+	 namespace: istio-apps	 
   spec:
     replicas: 1
     strategy: {}
